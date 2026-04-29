@@ -1,0 +1,13 @@
+global:
+  scrape_interval: 5s
+
+scrape_configs:
+  - job_name: 'services'
+    metrics_path: /metrics
+    static_configs:
+      - targets:
+          - auth_service:8000
+          - user_service:8000
+          - product_service:8000
+          - order_service:8000
+          - chat_service:8000

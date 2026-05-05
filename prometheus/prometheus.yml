@@ -1,6 +1,9 @@
 global:
   scrape_interval: 5s
 
+rule_files:
+  - "alerts.yml" # Подключаем файл с алертами
+
 scrape_configs:
   - job_name: 'services'
     metrics_path: /metrics
@@ -11,3 +14,7 @@ scrape_configs:
           - product_service:8000
           - order_service:8000
           - chat_service:8000
+    
+  - job_name: 'cadvisor'
+    static_configs:
+      - targets: ['cadvisor:8080']

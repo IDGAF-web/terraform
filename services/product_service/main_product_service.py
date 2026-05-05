@@ -3,6 +3,7 @@ from pydantic import BaseModel
 from fastapi.middleware.cors import CORSMiddleware
 from prometheus_client import generate_latest
 from fastapi.responses import Response
+from prometheus_fastapi_instrumentator import Instrumentator
 
 app = FastAPI()
 
@@ -13,6 +14,13 @@ app.add_middleware(
     allow_methods=["*"],
     allow_headers=["*"],
 )
+
+@app.get("/health")
+def health_check():
+    return {"status": "healthy"}
+
+
+Instrumentator().instrument(app).expose(app)
 
 products = {}
 product_id = 1
@@ -45,7 +53,3 @@ def add_product(product: Product):
 @app.get("/products/{pid}")
 def get_product(pid: int):
     return products.get(pid, {"error": "not found"})
-
-@app.get("/metrics")
-def metrics():
-    return Response(generate_latest(), media_type="text/plain")

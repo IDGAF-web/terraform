@@ -191,9 +191,12 @@ pre {
     <div id="comments"></div>
 
     <input id="comment_text" placeholder="write comment">
+    
     <button onclick="sendComment()">Send</button>
 
     <button onclick="closeCard()">Close</button>
+
+    <button onclick="buyProduct()" style="background: #10b981;">Buy Now</button>
 </div>
 
 <script>
@@ -355,6 +358,41 @@ async function loadComments() {
 
 function closeCard() {
     document.getElementById("productCard").style.display = "none";
+}
+
+async function buyProduct() {
+    // Получаем текущего пользователя (если есть в локальном хранилище или профиле)
+    const userEmail = document.getElementById("edit_email").value || "guest@example.com";
+    
+    // Получаем данные о товаре из заголовков модалки
+    const productName = document.getElementById("card_title").innerText;
+    const productPrice = parseFloat(document.getElementById("card_price").innerText.replace('$', ''));
+
+    try {
+        const res = await fetch("http://localhost:8004/orders", { // Предположим, порт Order Service 8004
+            method: "POST",
+            headers: {"Content-Type": "application/json"},
+            body: JSON.stringify({
+                product_id: currentProductId,
+                product_name: productName,
+                price: productPrice,
+                user_email: userEmail
+            })
+        });
+
+        const data = await res.json();
+
+        if (!res.ok) {
+            alert("Order failed: " + JSON.stringify(data));
+            return;
+        }
+
+        alert("Order placed successfully! ✅");
+        console.log("Order Data:", data);
+
+    } catch (err) {
+        alert("Network Error: " + err);
+    }
 }
 
 // LOGIN

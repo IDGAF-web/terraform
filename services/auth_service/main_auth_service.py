@@ -5,7 +5,7 @@ from fastapi.responses import Response
 import jwt
 import datetime
 from fastapi.middleware.cors import CORSMiddleware
-
+from prometheus_fastapi_instrumentator import Instrumentator
 
 
 app = FastAPI()
@@ -18,9 +18,19 @@ app.add_middleware(
     allow_headers=["*"],
 )
 
+@app.get("/health")
+def health_check():
+    return {"status": "healthy"}
+
+
+Instrumentator().instrument(app).expose(app)
+
 SECRET = "secret"
 
 fake_users = {}
+
+
+
 
 class User(BaseModel):
     email: str
@@ -46,6 +56,3 @@ def login(user: User):
 
     return {"access_token": token}
 
-@app.get("/metrics")
-def metrics():
-    return Response(generate_latest(), media_type="text/plain")

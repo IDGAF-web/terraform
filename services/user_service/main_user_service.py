@@ -4,6 +4,7 @@ from pydantic import BaseModel
 from prometheus_client import generate_latest, CONTENT_TYPE_LATEST
 from fastapi.responses import Response
 import jwt
+from prometheus_fastapi_instrumentator import Instrumentator
 
 app = FastAPI()
 
@@ -14,6 +15,14 @@ app.add_middleware(
     allow_methods=["*"],
     allow_headers=["*"],
 )
+
+@app.get("/health")
+def health_check():
+    return {"status": "healthy"}
+
+
+Instrumentator().instrument(app).expose(app)
+
 
 SECRET = "secret"
 
@@ -74,7 +83,3 @@ def delete_profile(authorization: str = Header(None)):
 
     return {"status": "deleted"}
 
-
-@app.get("/metrics")
-def metrics():
-    return Response(generate_latest(), media_type=CONTENT_TYPE_LATEST)

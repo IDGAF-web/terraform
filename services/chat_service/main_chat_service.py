@@ -2,6 +2,7 @@ from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 from prometheus_client import generate_latest, CONTENT_TYPE_LATEST
 from fastapi.responses import Response
+from prometheus_fastapi_instrumentator import Instrumentator
 
 app = FastAPI()
 
@@ -12,6 +13,13 @@ app.add_middleware(
     allow_methods=["*"],
     allow_headers=["*"],
 )
+
+@app.get("/health")
+def health_check():
+    return {"status": "healthy"}
+
+
+Instrumentator().instrument(app).expose(app)
 
 comments = {}
 
@@ -40,6 +48,3 @@ def get_comments(product_id: int):
     return comments.get(product_id, [])
 
 
-@app.get("/metrics")
-def metrics():
-    return Response(generate_latest(), media_type=CONTENT_TYPE_LATEST)

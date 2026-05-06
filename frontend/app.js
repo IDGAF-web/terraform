@@ -10,7 +10,6 @@ let state={user:null,cart:[]};
 const app=document.getElementById("app");
 const nav=document.getElementById("nav");
 
-// ================= NAV =================
 function renderNav(){
   nav.innerHTML=state.user?
   `
@@ -26,7 +25,6 @@ function renderNav(){
   `;
 }
 
-// ================= AUTH =================
 function showLogin(){
   app.innerHTML=`
     <div class="container">
@@ -89,7 +87,6 @@ function logout(){
   showLogin();
 }
 
-// ================= PRODUCTS =================
 async function loadProducts(){
   const res=await fetch(API.products);
   const products=await res.json();
@@ -113,7 +110,6 @@ async function loadProducts(){
   `;
 }
 
-// ================= CREATE =================
 function showCreateProduct(){
   app.innerHTML=`
     <div class="container">
@@ -140,7 +136,6 @@ async function createProduct(){
   loadProducts();
 }
 
-// ================= EDIT =================
 async function editProduct(id){
   const res=await fetch(API.products);
   const products=await res.json();
@@ -177,7 +172,6 @@ async function deleteProduct(id){
   loadProducts();
 }
 
-// ================= CART =================
 function addToCart(id){
   if(!state.user)return showLogin();
 
@@ -222,7 +216,6 @@ async function checkout(){
   loadProducts();
 }
 
-// ================= PROFILE =================
 function showProfile(){
   app.innerHTML=`
   <div class="container">
@@ -239,13 +232,12 @@ async function updateProfile() {
   const email = newEmail.value.trim();
   const password = newPassword.value.trim();
 
-  // Запрос идет на /api/users/update/{id}
   const res = await fetch(`${API.user}/update/${state.user.id}`, {
     method: "PUT",
     headers: { "Content-Type": "application/json" },
     body: JSON.stringify({
       email,
-      password: password || undefined // если пароль пустой, отправляем undefined
+      password: password || undefined 
     })
   });
 
@@ -264,15 +256,14 @@ async function updateProfile() {
 async function deleteAccount() {
   if (!confirm("Вы уверены, что хотите удалить аккаунт?")) return;
 
-  // Используем API.user, который равен "/api/users"
-  // Запрос уйдет на /api/users/delete/{id}
+
   const res = await fetch(`${API.user}/delete/${state.user.id}`, {
     method: "DELETE"
   });
 
   if (res.ok) {
     alert("Аккаунт успешно удален");
-    logout(); // Сбрасываем состояние и перекидываем на логин
+    logout(); 
   } else {
     const data = await res.json();
     alert(data.detail || "Ошибка при удалении");
@@ -281,6 +272,5 @@ async function deleteAccount() {
 
 
 
-// INIT
 renderNav();
 showLogin();

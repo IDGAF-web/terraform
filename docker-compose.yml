@@ -7,7 +7,7 @@ services:
 
 
   cadvisor:
-      image: gcr.io/cadvisor/cadvisor:v0.47.0 # Версия для Apple Silicon
+      image: gcr.io/cadvisor/cadvisor:v0.47.0 
       container_name: cadvisor
       restart: unless-stopped
       privileged: true

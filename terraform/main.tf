@@ -3,7 +3,6 @@ provider "google" {
   region  = var.region
 }
 
-# Настройка портов согласно п. 6.2 задания
 resource "google_compute_firewall" "assignment_sg" {
   name    = "microservices-firewall"
   network = "default"
@@ -16,7 +15,6 @@ resource "google_compute_firewall" "assignment_sg" {
   source_ranges = ["0.0.0.0/0"]
 }
 
-# Создание инстанса согласно п. 6.2 задания
 resource "google_compute_instance" "app_server" {
   name         = "microservices-host"
   machine_type = var.instance_type

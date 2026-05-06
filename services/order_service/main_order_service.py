@@ -7,17 +7,14 @@ from sqlalchemy.ext.declarative import declarative_base
 from sqlalchemy.orm import sessionmaker, Session
 from prometheus_fastapi_instrumentator import Instrumentator
 
-# 1. Настройка конфигурации (Раздел 4.2.1 ТЗ)
-# В Docker используем имя сервиса 'postgres', для локальных тестов на M4 — localhost
+
 DATABASE_URL = os.getenv("DATABASE_URL", "postgresql://postgres:1234@postgres:5432/store")
 
-# 2. Инициализация SQLAlchemy
-# Мы не импортируем create_all, так как это метод метаданных
+
 engine = create_engine(DATABASE_URL)
 SessionLocal = sessionmaker(autocommit=False, autoflush=False, bind=engine)
 Base = declarative_base()
 
-# 3. Определение модели данных
 class Order(Base):
     __tablename__ = "orders"
     id = Column(Integer, primary_key=True, index=True)
@@ -26,7 +23,6 @@ class Order(Base):
     price = Column(Float)
     user_email = Column(String)
 
-# 4. SRE-подход: Безопасное создание таблиц с ожиданием БД (Раздел 4.2.2 ТЗ)
 def init_db():
     retries = 5
     while retries > 0:
@@ -43,10 +39,8 @@ def init_db():
 
 init_db()
 
-# 5. Инициализация FastAPI
 app = FastAPI(title="Order Service")
 
-# Настройка CORS для работы с фронтендом
 app.add_middleware(
     CORSMiddleware,
     allow_origins=["*"],
@@ -55,11 +49,9 @@ app.add_middleware(
     allow_headers=["*"],
 )
 
-# 6. Автоматизация мониторинга (Раздел 4.2.3 ТЗ)
-# Экспонирует эндпоинт /metrics для Prometheus
+
 Instrumentator().instrument(app).expose(app)
 
-# Dependency для работы с сессиями
 def get_db():
     db = SessionLocal()
     try:
@@ -67,7 +59,6 @@ def get_db():
     finally:
         db.close()
 
-# --- ЭНДПОИНТЫ ---
 
 @app.get("/health")
 def health_check():

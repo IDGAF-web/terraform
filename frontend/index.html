@@ -5,7 +5,6 @@
     <link rel="stylesheet" href="style.css">
 
 <style>
-/* ===== BASE ===== */
 body {
     margin: 0;
     font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Arial;
@@ -13,13 +12,11 @@ body {
     color: #e5e7eb;
 }
 
-/* ===== LAYOUT ===== */
 .layout {
     display: flex;
     height: 100vh;
 }
 
-/* LEFT PANEL */
 .left {
     width: 320px;
     background: #0b1220;
@@ -28,14 +25,12 @@ body {
     overflow-y: auto;
 }
 
-/* RIGHT PANEL */
 .right {
     flex: 1;
     padding: 20px;
     overflow-y: auto;
 }
 
-/* ===== HEADERS ===== */
 h1 {
     margin: 0;
     padding: 15px;
@@ -48,7 +43,6 @@ h2 {
     margin: 10px 0;
 }
 
-/* ===== INPUTS ===== */
 input {
     width: 100%;
     padding: 10px;
@@ -59,7 +53,6 @@ input {
     color: white;
 }
 
-/* ===== BUTTONS ===== */
 button {
     width: 100%;
     padding: 10px;
@@ -76,19 +69,16 @@ button:hover {
     background: #2563eb;
 }
 
-/* ===== NAV ===== */
 nav {
     margin-bottom: 15px;
 }
 
-/* ===== PRODUCTS GRID ===== */
 #products {
     display: grid;
     grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
     gap: 12px;
 }
 
-/* PRODUCT CARD */
 #products div {
     background: #1e293b;
     padding: 12px;
@@ -96,7 +86,6 @@ nav {
     border: 1px solid #334155;
 }
 
-/* OUTPUT */
 pre {
     background: #0b1220;
     padding: 10px;
@@ -105,7 +94,6 @@ pre {
     color: #10b981;
 }
 
-/* MODAL */
 #productCard {
     position: fixed;
     top: 50%;
@@ -129,7 +117,6 @@ pre {
 
 <div class="layout">
 
-    <!-- LEFT -->
     <div class="left">
 
         <h2>Register</h2>
@@ -158,7 +145,6 @@ pre {
 
     </div>
 
-    <!-- RIGHT -->
     <div class="right">
 
 
@@ -181,7 +167,6 @@ pre {
 
 </div>
 
-<!-- PRODUCT MODAL -->
 <div id="productCard" style="display:none;">
     <h2 id="card_title"></h2>
     <p id="card_desc"></p>
@@ -203,7 +188,6 @@ pre {
 
 let token = localStorage.getItem("token");
 
-// REGISTER
 async function register() {
     try {
         const res = await fetch("http://localhost:8001/register", {
@@ -259,7 +243,7 @@ async function createProduct() {
         document.getElementById("output").innerText =
             "PRODUCT CREATED ✅";
 
-        loadProducts(); // refresh
+        loadProducts(); 
 
     } catch (err) {
         document.getElementById("output").innerText =
@@ -361,15 +345,13 @@ function closeCard() {
 }
 
 async function buyProduct() {
-    // Получаем текущего пользователя (если есть в локальном хранилище или профиле)
     const userEmail = document.getElementById("edit_email").value || "guest@example.com";
     
-    // Получаем данные о товаре из заголовков модалки
     const productName = document.getElementById("card_title").innerText;
     const productPrice = parseFloat(document.getElementById("card_price").innerText.replace('$', ''));
 
     try {
-        const res = await fetch("http://localhost:8004/orders", { // Предположим, порт Order Service 8004
+        const res = await fetch("http://localhost:8004/orders", { 
             method: "POST",
             headers: {"Content-Type": "application/json"},
             body: JSON.stringify({
@@ -395,7 +377,6 @@ async function buyProduct() {
     }
 }
 
-// LOGIN
 async function login() {
     try {
         const res = await fetch("http://localhost:8001/login", {
@@ -426,7 +407,6 @@ async function login() {
             "NETWORK ERROR: " + err;
     }
 }
-// GET PROFILE (user_service)
 async function getProfile() {
     try {
         const res = await fetch("http://localhost:8002/me", {
@@ -491,7 +471,6 @@ async function deleteProfile() {
         document.getElementById("output").innerText =
             "DELETED: " + JSON.stringify(data);
 
-        // auto logout
         logout();
 
     } catch (err) {
@@ -500,7 +479,6 @@ async function deleteProfile() {
     }
 }
 
-// LOGOUT
 function logout() {
     token = null;
     localStorage.removeItem("token");

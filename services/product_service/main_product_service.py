@@ -28,7 +28,7 @@ product_id = 1
 class Product(BaseModel):
     name: str
     description: str | None = None
-    price: float | None = None   # ✅ FIX
+    price: float | None = None   
 
 @app.get("/products")
 def get_products():
@@ -42,7 +42,7 @@ def add_product(product: Product):
         "id": product_id,
         "name": product.name,
         "description": product.description,
-        "price": product.price   # ✅ FIX
+        "price": product.price   
     }
 
     products[product_id] = prod
